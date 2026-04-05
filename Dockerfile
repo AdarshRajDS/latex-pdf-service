@@ -6,10 +6,8 @@ RUN apt-get update && apt-get install -y curl \
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-
-RUN pip install uv && uv sync
-
 COPY . .
+
+RUN pip install --no-cache-dir fastapi uvicorn pydantic pydantic-settings
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
