@@ -9,6 +9,11 @@ OUTPUT_DIR = "outputs"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(settings.TMP_DIR, exist_ok=True)
 
+import os
+
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
+
+
 
 async def compile_latex_files(request: CompileRequest):
     outputs = []
@@ -43,7 +48,9 @@ async def compile_latex_files(request: CompileRequest):
 
         outputs.append({
             "filename": file.filename.replace(".tex", ".pdf"),
-            "url": f"http://localhost:8000/files/{job_id}.pdf"
+            "url": f"{BASE_URL}/files/{job_id}.pdf"
+
+            
         })
 
     return {"outputs": outputs}
