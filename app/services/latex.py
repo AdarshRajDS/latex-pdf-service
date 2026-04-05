@@ -4,12 +4,13 @@ import subprocess
 from app.models.schemas import CompileRequest
 from app.utils.security import sanitize_latex
 from app.core.config import settings
+import shutil
+
 
 OUTPUT_DIR = "outputs"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(settings.TMP_DIR, exist_ok=True)
 
-import os
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 
@@ -44,7 +45,9 @@ async def compile_latex_files(request: CompileRequest):
             raise Exception("PDF not generated")
 
         # Move to public folder
-        os.rename(pdf_tmp_path, pdf_final_path)
+        shutil.move(pdf_tmp_path, pdf_final_path)
+        if not os.path.exists(pdf_final_path):
+            raise Exception("PDF not moved to outputs directory")
 
         outputs.append({
             "filename": file.filename.replace(".tex", ".pdf"),
